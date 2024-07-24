@@ -1,141 +1,122 @@
 #include <iostream>
+#include <vector>
+#include <cmath>
+#include <algorithm>
+#include <numeric>
+
 using namespace std;
+
+// Utility function to check if current minimum value
+// is feasible or not.
+bool isPossible(int arr[], int n, int m, int curr_min)
+{
+    int studentsRequired = 1;
+    int curr_sum = 0;
+
+    // iterate over all books
+    for (int i = 0; i < n; i++)
+    {
+        // check if current number of pages are greater
+        // than curr_min that means we will get the result
+        // after mid no. of pages
+        if (arr[i] > curr_min)
+            return false;
+
+        // count how many students are required
+        // to distribute curr_min pages
+        if (curr_sum + arr[i] > curr_min)
+        {
+            // increment student count
+            studentsRequired++;
+
+            // update curr_sum
+            curr_sum = arr[i];
+
+            // if students required becomes greater
+            // than given no. of students,return false
+            if (studentsRequired > m)
+                return false;
+        }
+
+        // else update curr_sum
+        else
+            curr_sum += arr[i];
+    }
+    return true;
+}
+
+// function to find minimum pages
+int findPages(int arr[], int n, int m)
+{
+    long long sum = 0;
+
+    // return -1 if no. of books is less than
+    // no. of students
+    if (n < m)
+        return -1;
+    int mx = INT32_MIN;
+
+    // Count total number of pages
+    for (int i = 0; i < n; i++)
+    {
+        sum += arr[i];
+        mx = max(mx, arr[i]);
+    }
+
+    // initialize start as 0 pages and end as
+    // total pages
+    int start = mx, end = sum;
+    int result = INT32_MAX;
+
+    // traverse until start <= end
+    while (start <= end)
+    {
+        // check if it is possible to distribute
+        // books by using mid as current minimum
+        int mid = (start + end) / 2;
+        if (isPossible(arr, n, m, mid))
+        {
+            // update result to current distribution
+            // as it's the best we have found till now.
+            result = mid;
+
+            // as we are finding minimum and books
+            // are sorted so reduce end = mid -1
+            // that means
+            end = mid - 1;
+        }
+
+        else
+            // if not possible means pages should be
+            // increased so update start = mid + 1
+            start = mid + 1;
+    }
+
+    // at-last return minimum no. of  pages
+    return result;
+}
 
 int main()
 {
-    int N;
-    cin >> N;
-    int m;
-    //if (N > 1)
-    //{
-        m = N / 2;
-        for (int i = 1; i <= 1; i++)
-        {
-            for (int j = 1; j <= N - 1; j++)
-            {
-                cout << " " << " ";
-            }
-            for (int j = 1; j <= i; j++)
-            {
-                cout << 1 << " ";
-            }
-            cout << endl;
-        }
-        for (int i = 1; i <= m; i++)
-        {
-            int count = 1;
-            for (int j = 1; j <= 2 * (m - i); j++)
-            {
-                cout << " " << " ";
-            }
-            int count1 = i + 1;
-            for (int j = 1; j <= i + 1; j++)
-            {
-                cout << count1 << " ";
-                count1--;
-            }
-            for (int j = 1; j <= 2 * i - 1; j++)
-            {
-                cout << " " << " ";
-            }
-            if (i >= 1)
-            {
-                for (int j = 1; j <= i + 1; j++)
-                {
-                    cout << count << " ";
-                    count++;
-                }
-            }
+    int t;
+    cin >> t;
 
-            cout << endl;
+    for (int i = 1; i <= t; i++)
+    {
+        int b;
+        cin >> b;
+
+        int s;
+        cin >> s;
+
+        int books[b];
+        for (int i = 0; i < b; i++)
+        {
+            cin >> books[i];
         }
 
-        for (int i = m - 1; i >= 1; --i)
-        {
-            int count = 1;
-
-            for (int j = 1; j <= 2 * (m - i); j++)
-            {
-                cout << " " << " ";
-            }
-            int count1 = i + 1;
-            for (int j = 1; j <= i + 1; j++)
-            {
-                cout << count1 << " ";
-                count1--;
-            }
-            for (int j = 1; j <= 2 * i - 1; j++)
-            {
-                cout << " " << " ";
-            }
-            if (i >= 1)
-            {
-                /* code */
-                for (int j = 1; j <= i + 1; j++)
-                {
-                    cout << count << " ";
-                    count++;
-                }
-            }
-
-            cout << endl;
-        }
-        for (int i = 1; i <= 1; i++)
-        {
-            for (int j = 1; j <= N - 1; j++)
-            {
-                cout << " " << " ";
-            }
-            for (int j = 1; j <= i; j++)
-            {
-                cout << 1 << " ";
-            }
-            cout << endl;
-        }
-    //}
-    // else if (N == 1)
-    // {
-    //     for (int i = 1; i <= N; i++)
-    //     {
-    //         for (int j = 1; j <= N; j++)
-    //         {
-    //             cout << " " << " ";
-    //         }
-    //         for (int j = 1; j <= N; j++)
-    //         {
-    //             cout << N << " ";
-    //         }
-    //         cout << endl;
-    //     }
-    //     for (int i = 1; i <= N; i++)
-    //     {
-    //         for (int j = 1; j <= N; j++)
-    //         {
-    //             cout << N << " ";
-    //         }
-    //         for (int j = 1; j <= N; j++)
-    //         {
-    //             cout << " " << " ";
-    //         }
-    //         for (int j = 1; j <= N; j++)
-    //         {
-    //             cout << N << " ";
-    //         }
-    //         cout << endl;
-    //     }
-    //     for (int i = 1; i <= N; i++)
-    //     {
-    //         for (int j = 1; j <= N; j++)
-    //         {
-    //             cout << " " << " ";
-    //         }
-    //         for (int j = 1; j <= N; j++)
-    //         {
-    //             cout << N << " ";
-    //         }
-    //         cout << endl;
-    //     }
-    // }
+        cout << findPages(books, b, s) << endl;
+    }
 
     return 0;
 }

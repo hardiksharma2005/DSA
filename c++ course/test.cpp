@@ -1,45 +1,88 @@
 #include <iostream>
+#include <vector>
 #include <cmath>
+#include <algorithm>
+#include <numeric>
+
 using namespace std;
 
-int main() {
-    int N;
-    cin>>N;
-    for(int i=1;i<=(N+1)/2;i++){
-        for(int j=1;j<=(2*(N+1-2*i));j++){
-            cout<<" ";
+bool canwedistribute(int b, int s, vector<int> &books, int mid)
+{
+    int studentsNeeded = 1;
+    int currentSum = 0;
+
+    for (int i = 0; i < b; ++i)
+    {
+        if (books[i] > mid)
+        {
+            return false;
         }
-        for(int j = i;j>0;j--){
-            cout<<j<<" ";
+        if (currentSum + books[i] > mid)
+        {
+            studentsNeeded++;
+            currentSum = books[i];
+            if (studentsNeeded > s)
+            {
+                return false;
+            }
         }
-       
-        for(int j=1;j<(4*(i-1)-1);j++){
-            cout<<" ";
-        }
-        if(i>1){
-        for(int j=1;j<=i;j++){
-            cout<<j<<" ";
+        else
+        {
+            currentSum += books[i];
         }
     }
-        cout<<endl;
+
+    return true;
+}
+
+int maxpages(int b, int s, vector<int> &books)
+{
+    if (b < s)
+    {
+        return -1;
     }
-    for(int i=N/2;i>0;i--){
-         for(int j=1;j<=(2*(N+1-2*i));j++){
-            cout<<" ";
+    int l = books[0];
+    int r = accumulate(books.begin(), books.end(), 0);
+    int mid;
+
+    int ans;
+    while (l <= r)
+    {
+        mid = l + (r - l) / 2;
+        if (canwedistribute(b, s, books, mid))
+        {
+            ans = mid;
+            r = mid - 1;
         }
-        for(int j = i;j>0;j--){
-            cout<<j<<" ";
+        else
+        {
+            l = mid + 1;
         }
-        
-        for(int j=1;j<(4*(i-1)-1);j++){
-            cout<<" ";
-        }
-        if(i>1){
-        for(int j=1;j<=i;j++){
-            cout<<j<<" ";
-        }
-        }
-        cout<<endl;
     }
+    return ans;
+}
+
+int main()
+{
+    int t;
+    cin >> t;
+
+    for (int i = 1; i <= t; i++)
+    {
+        int b;
+        cin >> b;
+
+        int s;
+        cin >> s;
+
+        vector<int> books(b);
+        for (int i = 0; i < b; i++)
+        {
+            cin >> books[i];
+        }
+
+        cout << maxpages(b, s, books) << endl;
+    }
+
     return 0;
 }
