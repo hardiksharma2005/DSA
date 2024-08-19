@@ -1,43 +1,54 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 
-int countvalidnumbers(int n, int lastDigit)
+int count = 0;
+void f(int n, int i, int j, vector<string> &results, string a)
 {
-    // Base case
-    if (n == 1)
+    // base case
+    if (i >= n || j >= n)
     {
-        return 1;
+        return;
+    }
+    if (i == n - 1 && j == n - 1)
+    {
+        results.push_back(a);
+        count++;
+        return;
     }
 
-    // Recursive case
-    int result = 0;
-    if (lastDigit == 0)
+    // recursive case
+    // option 1 move vertically
+    a.push_back('V');
+    f(n, i + 1, j, results, a);
+    a.pop_back();
+
+    // option 2 move horizontally
+    a.push_back('H');
+    f(n, i, j + 1, results, a);
+    a.pop_back();
+
+    // option 3 move diagonally
+    if (i == j)
     {
-        // Last digit is `a` (0), can be preceded by `a` or `b`
-        result = countvalidnumbers(n - 1, 0) + countvalidnumbers(n - 1, 1);
+        a.push_back('D');
+        f(n, i + 1, j + 1, results, a);
+        a.pop_back();
     }
-    else
-    {
-        // Last digit is `b` (1), must be preceded by `a`
-        result = countvalidnumbers(n - 1, 0);
-    }
-    return result;
 }
-
 int main()
 {
-    int t; // test cases
-    cin >> t;
-    for (int i = 1; i <= t; i++)
-    {
-        int n;
-        cin >> n;
-        int result;
-        // 0 : 'a'
-        // 1 : 'b'
-        result = countvalidnumbers(n, 0) + countvalidnumbers(n, 1);
-        cout << "#" << i << " : " << result << endl;
-    }
+    int n;
+    cin >> n;
 
+    vector<string> results;
+    string a;
+    f(n, 0, 0, results, a);
+    for (int i = 0; i < results.size(); i++)
+    {
+        cout << results[i] << " ";
+    }
+    cout << endl;
+    cout << count;
     return 0;
 }
