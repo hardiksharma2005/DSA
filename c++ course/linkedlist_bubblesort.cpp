@@ -51,7 +51,6 @@ int computeLengthIterative(ListNode *head)
 
 ListNode *bubbleSort(ListNode *head)
 {
-
     int n = computeLengthIterative(head); // n-steps
 
     int i = 1;

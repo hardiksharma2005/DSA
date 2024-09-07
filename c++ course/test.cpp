@@ -1,61 +1,71 @@
 #include <iostream>
+#include <queue>
+#include <stack>
 #include <vector>
-#include <algorithm>
-#include <string>
+
 using namespace std;
-// Function to generate permutations
-void generatePermutations(string str, int l, int r, vector<string> &result)
+
+bool cansortq(queue<int> iq)
 {
-    if (l == r)
+    stack<int> ts;
+    int target = 1;
+
+    while (!iq.empty())
     {
-        result.push_back(str);
-    }
-    else
-    {
-        for (int i = l; i <= r; i++)
+        int front = iq.front();
+        iq.pop();
+
+        // front of queue can be pushed to another to queue directly
+        if (front == target)
         {
-            swap(str[l], str[i]);
-            generatePermutations(str, l + 1, r, result);
-            swap(str[l], str[i]); // backtrack
+            target++;
+            // Check if we can pop from the stack as well
+            while (!ts.empty() && ts.top() == target)
+            {
+                ts.pop();
+                target++;
+            }
         }
-    }
-}
-
-// Function to get all permutations less than the original string
-vector<string> getSmallerPermutations(string str)
-{
-    vector<string> result;
-    generatePermutations(str, 0, str.size() - 1, result);
-
-    // Remove duplicates (not necessary if all characters are unique)
-    sort(result.begin(), result.end());
-    result.erase(unique(result.begin(), result.end()), result.end());
-
-    // Filter permutations to keep only those smaller than the original string
-    vector<string> smallerPerms;
-    for (const string &perm : result)
-    {
-        if (perm < str)
+        // if front is eligible for direct push then push it into stack
+        else
         {
-            smallerPerms.push_back(perm);
+            ts.push(front);
         }
     }
 
-    return smallerPerms;
+    // checking the stack
+    while (!ts.empty())
+    {
+        if (ts.top() != target)
+        {
+            return false;
+        }
+        ts.pop();
+        target++;
+    }
+
+    return true;
 }
 
 int main()
 {
-    string input;
-    cin >> input;
+    int T;
+    cin >> T;
 
-    // Get permutations that are lexicographically smaller
-    vector<string> result = getSmallerPermutations(input);
-
-    // Output results
-    for (const string &s : result)
+    while (T--)
     {
-        cout << s << endl;
+        int n;
+        cin >> n;
+
+        queue<int> iq;
+        for (int i = 0; i < n; ++i)
+        {
+            int num;
+            cin >> num;
+            iq.push(num);
+        }
+
+        cansortq(iq) ? cout << "Yes" << endl : cout << "No" << endl;
     }
 
     return 0;

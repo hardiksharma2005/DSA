@@ -1,54 +1,69 @@
 #include <iostream>
-#include <vector>
+#include <queue>
+#include <stack>
+
 using namespace std;
 
-int count = 0;
-void f(int n, int i, int j, vector<string> &results, string a)
+bool cansortq(queue<int> &iq, stack<int> &ts, int t)
 {
     // base case
-    if (i >= n || j >= n)
+    if (iq.empty())
     {
-        return;
+        while (!ts.empty())
+        {
+            if (ts.top() != t)
+            {
+                return false;
+            }
+            ts.pop();
+            t++;
+        }
+        return true;
     }
-    if (i == n - 1 && j == n - 1)
+
+    // recurive case
+    int front = iq.front();
+    iq.pop();
+
+    // iq's front is equal to target
+    if (front == t)
     {
-        results.push_back(a);
-        count++;
-        return;
+        // front is then moved to next queue
+        return cansortq(iq, ts, t + 1);
     }
-
-    // recursive case
-    // option 1 move vertically
-    a.push_back('V');
-    f(n, i + 1, j, results, a);
-    a.pop_back();
-
-    // option 2 move horizontally
-    a.push_back('H');
-    f(n, i, j + 1, results, a);
-    a.pop_back();
-
-    // option 3 move diagonally
-    if (i == j)
+    else
     {
-        a.push_back('D');
-        f(n, i + 1, j + 1, results, a);
-        a.pop_back();
+        // pushing the element to stack
+        ts.push(front);
+        return cansortq(iq, ts, t);
     }
 }
+
 int main()
 {
-    int n;
-    cin >> n;
+    int T;
+    cin >> T; // Number of test cases
 
-    vector<string> results;
-    string a;
-    f(n, 0, 0, results, a);
-    for (int i = 0; i < results.size(); i++)
+    while (T--)
     {
-        cout << results[i] << " ";
+        int n;
+        cin >> n; // Number of elements in the queue
+
+        queue<int> iq;
+        stack<int> ts;
+        for (int i = 0; i < n; i++)
+        {
+            int num;
+            cin >> num;
+            iq.push(num);
+        }
+
+        if (cansortq(iq, ts,1)) {
+            cout << "Yes" << endl;
+        } else {
+            cout << "No" << endl;
+        }
     }
-    cout << endl;
-    cout << count;
+
     return 0;
 }
